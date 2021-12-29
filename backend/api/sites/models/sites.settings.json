@@ -1,0 +1,55 @@
+{
+  "kind": "collectionType",
+  "collectionName": "sites",
+  "info": {
+    "name": "Sites",
+    "description": ""
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "isDrafted": {
+      "type": "boolean",
+      "required": true,
+      "default": true
+    },
+    "owner": {
+      "via": "sites",
+      "model": "user",
+      "plugin": "users-permissions"
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "name"
+    },
+    "subDomain": {
+      "type": "string",
+      "required": false,
+      "unique": true,
+      "minLength": 3
+    },
+    "content": {
+      "type": "json",
+      "required": false
+    },
+    "customDomain": {
+      "type": "string",
+      "unique": true
+    },
+    "contentHTML": {
+      "type": "text"
+    },
+    "attachments": {
+      "via": "site",
+      "collection": "attachments"
+    }
+  }
+}

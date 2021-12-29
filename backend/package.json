@@ -1,0 +1,44 @@
+{
+  "name": "back",
+  "private": true,
+  "version": "0.1.0",
+  "description": "A Strapi application",
+  "scripts": {
+    "dev": "strapi develop",
+    "start": "strapi start",
+    "build": "strapi build",
+    "strapi": "strapi",
+    "deploy": "gcloud app deploy app.yaml --project robotic-charmer-327516",
+    "gcp-build": "strapi build",
+    "deploy-log": "gcloud app logs tail --project robotic-charmer-327516"
+  },
+  "devDependencies": {},
+  "dependencies": {
+    "knex": "0.21.18",
+    "pg": "^8.7.1",
+    "sqlite3": "5.0.0",
+    "strapi": "3.6.8",
+    "strapi-admin": "3.6.8",
+    "strapi-connector-bookshelf": "3.6.8",
+    "strapi-plugin-content-manager": "3.6.8",
+    "strapi-plugin-content-type-builder": "3.6.8",
+    "strapi-plugin-documentation": "^3.6.8",
+    "strapi-plugin-email": "3.6.8",
+    "strapi-plugin-i18n": "3.6.8",
+    "strapi-plugin-upload": "3.6.8",
+    "strapi-plugin-users-permissions": "3.6.8",
+    "strapi-provider-upload-google-cloud-storage": "^3.6.8",
+    "strapi-utils": "3.6.8"
+  },
+  "author": {
+    "name": "A Strapi developer"
+  },
+  "strapi": {
+    "uuid": "faecdbcd-a07f-47c5-a974-316f04d54c75"
+  },
+  "engines": {
+    "node": ">=12.0",
+    "npm": "^6.0.0"
+  },
+  "license": "MIT"
+}
