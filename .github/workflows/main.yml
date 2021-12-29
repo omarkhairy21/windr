@@ -1,0 +1,24 @@
+name: Deploy Backend to Google App Engine
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - "backend/**"
+
+jobs:
+  build-and-deploy-to-gae:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install dependencies
+        uses: actions/checkout@v2
+        with:
+          checkout_dir: backend
+          run: npm install
+      - name: Build
+        run: npm run build
+      # - name: Deploy
+      #   uses: actions/deploy@v2
+      #   with:
+      #     app-engine-web-app:
+      #       gae-version: 1
