@@ -13,7 +13,7 @@ jobs:
       - name: Install dependencies
         uses: actions/checkout@v2
         with:
-          checkout_dir: backend
+          checkout_dir: ./backend
           run: npm install
       - name: Build
         run: npm run build
