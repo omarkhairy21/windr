@@ -2,7 +2,7 @@
   "name": "Windr Backend",
   "private": true,
   "version": "0.1.0",
-  "description": "A Strapi application",
+  "description": "Windr Backend",
   "scripts": {
     "dev": "strapi develop",
     "start": "strapi start",
