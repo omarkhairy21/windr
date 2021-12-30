@@ -18,8 +18,6 @@ jobs:
         run: npm install
       - name: Build
         run: npm run build
-      # - name: Deploy
-      #   uses: actions/deploy@v2
-      #   with:
-      #     app-engine-web-app:
-      #       gae-version: 1
+      - name: Deploy
+        uses: google-github-actions/deploy-cloudrun@v0
+        run: npm run deploy
