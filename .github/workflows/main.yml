@@ -9,10 +9,12 @@ on:
 jobs:
   build-and-deploy-to-gae:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
     steps:
       - uses: actions/checkout@v2
       - name: Install dependencies
-        working-directory: backend
         run: npm install
       - name: Build
         run: npm run build
