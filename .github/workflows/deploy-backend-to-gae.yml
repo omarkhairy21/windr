@@ -14,6 +14,7 @@ jobs:
         working-directory: backend
     steps:
       - uses: actions/checkout@v2
+      - uses: actions/nodejs@v14
       - name: Install dependencies
         run: npm install
       - name: Build
