@@ -10,11 +10,13 @@ jobs:
   build-and-deploy-to-gae:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
+        with: 
+          path: backend
       - name: Install dependencies
-        uses: actions/checkout@v2
-        run: cd backend && npm install
+        run: npm install
       - name: Build
-        run: cd backend && npm run build
+        run: npm run build
       # - name: Deploy
       #   uses: actions/deploy@v2
       #   with:
