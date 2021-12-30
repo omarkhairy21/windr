@@ -12,11 +12,9 @@ jobs:
     steps:
       - name: Install dependencies
         uses: actions/checkout@v2
-        with:
-          checkout_dir: ./backend
-          run: npm install
+        run: cd backend && npm install
       - name: Build
-        run: npm run build
+        run: cd backend && npm run build
       # - name: Deploy
       #   uses: actions/deploy@v2
       #   with:
