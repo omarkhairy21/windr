@@ -12,10 +12,7 @@ module.exports = ({ env }) => {
           password: env('DATABASE_PASSWORD'),
         },
         options: {
-          debug: env.bool('ENABLE_DATABASE_LOGS'),
-          pool: {
-            min: env('DATABASE_MIN_CONNECTIONS', 2),
-          },
+          debug: env.bool('ENABLE_DATABASE_LOGS')
         },
       },
     },
