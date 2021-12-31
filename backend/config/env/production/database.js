@@ -14,7 +14,7 @@ module.exports = ({ env }) => {
         options: {
           debug: env.bool('ENABLE_DATABASE_LOGS'),
           pool: {
-            min: env('DATABASE_MIN_CONNECTIONS', 2),
+            min: env.int('DATABASE_MIN_CONNECTIONS'),
           },
         },
       },
