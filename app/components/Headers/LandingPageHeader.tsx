@@ -24,7 +24,7 @@ export function LandingPageHeader() {
               fontSize={{ base: '3xl', sm: '4xl', md: '6xl' }}
               color="gray.700"
               lineHeight={'110%'}>
-              Just 60 Seconds to create and publish your site.
+              Mobile first website builder
             </Heading>
           </Center>
           <Center>
@@ -36,9 +36,9 @@ export function LandingPageHeader() {
               fontWeight="normal"
               lineHeight={'160%'}
               color="gray.500">
-              It does&apos;t need to be complex choose the simplest way to create website{' '}
+              Create and publish static websites in seconds form any device! 
               <Text bg={windrColorLightBlue} as="span">
-                Optimized to use form your mobile
+               no code skills required with no learning curve
               </Text>
             </Heading>
           </Center>

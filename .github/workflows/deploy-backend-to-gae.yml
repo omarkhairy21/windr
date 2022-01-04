@@ -1,17 +1,17 @@
-name: Deploy Backend to Google App Engine
+name: Deploy API to Google App Engine
 on:
   push:
     branches:
       - master
     paths:
-      - "backend/**"
+      - "api/**"
 
 jobs:
   build-and-deploy-to-gae:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: backend
+        working-directory: api
     steps:
       - uses: actions/checkout@v2
       - uses:  actions/setup-node@v2
