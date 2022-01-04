@@ -14,6 +14,7 @@ export default async function addDomain(req: NextApiRequest, res: NextApiRespons
   })
 
   const data = await response.json()
+  console.log(data)
   if (data.error?.code == 'forbidden') {
     res.status(403).end()
   } else if (data.error?.code == 'domain_taken') {

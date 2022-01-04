@@ -40,7 +40,6 @@ interface ISiteFormProps {
 
 export function SiteFom({ onCloseDrawer, siteId }: ISiteFormProps) {
   const { authToken, userId } = useAuth()
-  console.log('siteId', siteId)
   const { site } = useSite(siteId)
   const toast = useToast()
   const {
@@ -59,7 +58,14 @@ export function SiteFom({ onCloseDrawer, siteId }: ISiteFormProps) {
 
   const onSubmit: SubmitHandler<ISiteForm> = async data => {
     const response = await createSite<ISiteForm>({ site: data, token: authToken, owner: userId })
-    if (response.status !== 201 && !response.ok) {
+    if (response.status === 200) {
+      const fullCustomDomain = `${data.subDomain}.windr.co`
+      const res = await fetch(`api/add-custom-domain?domain=${fullCustomDomain}`, {
+        method: 'POST',
+      })
+      console.log(res)
+    }
+    if (response.status !== 200 && !response.ok) {
       return toast({
         title: 'Error',
         description: 'Something went wrong',
