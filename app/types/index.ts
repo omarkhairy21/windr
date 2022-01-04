@@ -13,6 +13,12 @@ export interface Site {
   published_at: Date
 }
 
+export interface Profile {
+  id: string
+  sites: Site[]
+  user: Owner
+}
+
 export interface Owner {
   id: string
   username: string

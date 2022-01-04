@@ -1,14 +1,14 @@
 import useSWR from 'swr'
-import { Site } from '@types'
+import { Profile } from '@types'
 import { getSitesFetcher } from '@lib/api'
 import { useAuth } from './useAuth'
 
 export function useSites() {
-  const { authToken } = useAuth()
-  const { data, error, mutate } = useSWR<[Site]>([`sites`, authToken], getSitesFetcher)
+  const { authToken, userId } = useAuth()
+  const { data, error, mutate } = useSWR<Profile>([`users/${userId}`, authToken], getSitesFetcher)
 
   return {
-    sites: data,
+    sites: data?.sites,
     isLoading: !error && !data,
     error,
     mutate,

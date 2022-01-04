@@ -36,9 +36,9 @@ export function LandingPageHeader() {
               fontWeight="normal"
               lineHeight={'160%'}
               color="gray.500">
-              Create and publish static websites in seconds form any device! 
+              Create and publish static websites in seconds form any device,{' '}
               <Text bg={windrColorLightBlue} as="span">
-               no code skills required with no learning curve
+               no code skills required with no learning curve.
               </Text>
             </Heading>
           </Center>

@@ -9,7 +9,7 @@ export const getSitesFetcher = async (endPoint: string, token: string) => {
   })
 
   if (!response.ok) {
-    const error = new Error('An error occurred while fetching the data.')
+    const error = new Error('An error occurred while fetching sites.')
     return error
   }
   return response.json()
