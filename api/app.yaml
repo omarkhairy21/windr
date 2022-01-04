@@ -1,7 +1,12 @@
 runtime: nodejs14
 
-# 512 MB	1.2 GHz	manual, basic
-instance_class: B2 
+instance_class: F2
+
+automatic_scaling:
+  min_idle_instances: 1
+  max_idle_instances: 1
+  min_instances: 1
+  max_instances: 1
 
 env_variables:
   HOST: '0.0.0.0'
