@@ -63,16 +63,17 @@ const productionEnvironment = new aws.elasticbeanstalk.Environment("windr-api-pr
   solutionStackName: '64bit Amazon Linux 2 v5.4.9 running Node.js 14',
   tier: 'WebServer',
   settings: [
-    {
-      name: 'VPCId',
-      namespace: 'aws:ec2:vpc',
-      value: defaultVPC.id,
-    },
-    {
-      name: 'Subnets',
-      namespace: 'aws:ec2:vpc',
-      value: test,
-    },
+    // {
+    //   name: 'VPCId',
+    //   namespace: 'aws:ec2:vpc',
+    //   value: defaultVPC.id,
+    // },
+    // {
+    //   name: 'Subnets',
+    //   namespace: 'aws:ec2:vpc',
+    //   value: test,
+    // },
+    
     {
       name: "IamInstanceProfile",
       namespace: "aws:autoscaling:launchconfiguration",
