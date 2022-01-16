@@ -63,7 +63,6 @@ export function SiteFom({ onCloseDrawer, siteId }: ISiteFormProps) {
       const res = await fetch(`api/add-custom-domain?domain=${fullCustomDomain}`, {
         method: 'POST',
       })
-      console.log(res)
     }
     if (response.status !== 200 && !response.ok) {
       return toast({
@@ -88,18 +87,22 @@ export function SiteFom({ onCloseDrawer, siteId }: ISiteFormProps) {
 
   const checkSubDomain = useCallback(
     debounce(async (subDomain: string) => {
-      const isUsed = await checkIfSubDomainUsed(subDomain?.trim())
-      if (isUsed) return setError('subDomain', { type: 'validate' })
+      const isUsed = await checkIfSubDomainUsed(subDomain)
+      if (isUsed) { return setError('subDomain', { type: 'validate', message: 'This domain already used'}) }
       return clearErrors('subDomain')
     }, 400),
     [],
   )
 
   useEffect(() => {
-    if (subDomainValue && subDomainValue?.length >= 3) {
+    console.log('Form Errors', errors)
+  })
+
+  useEffect(() => {
+    if (isValid && !isValidating) {
       checkSubDomain(subDomainValue)
     }
-  }, [subDomainValue])
+  }, [isValid, isValidating])
 
   useEffect(() => {
     if (site && siteId) {
@@ -131,13 +134,17 @@ export function SiteFom({ onCloseDrawer, siteId }: ISiteFormProps) {
             {...register('subDomain', {
               required: 'Sub-Domain is required',
               minLength: { value: 3, message: 'Minimum length should be 3' },
+              setValueAs: (value: string) => value.trim().toLowerCase(),
+              validate: {
+                hasSpecialCharacters: value => value?.match(/\s/g) ? 'Sub-Domain should not contain spaces' : true,
+                shouldBeCharacters: value => value?.match(/[^a-z0-9-]/g) ? 'Sub-Domain should only contain characters and numbers' : true,
+              }
             })}
           />
           <InputRightAddon>windr.co</InputRightAddon>
         </InputGroup>
         <FormErrorMessage>
           {errors.subDomain && errors.subDomain.message}
-          {errors.subDomain?.type === 'validate' && 'This Domain already used!'}
         </FormErrorMessage>
         <FormHelperText>
           {getValues('subDomain') && `final url: https://${getValues('subDomain')}.windr.co`}
@@ -148,9 +155,9 @@ export function SiteFom({ onCloseDrawer, siteId }: ISiteFormProps) {
           colorScheme="blue"
           type="submit"
           onClick={handleSubmit(onSubmit)}
-          isDisabled={!isValid}
+          isDisabled={isValidating || isSubmitting || !isValid}
           isLoading={isSubmitting || isValidating}>
-          Create
+          {siteId ? 'Update' : 'Create'}
         </Button>
       </Flex>
     </Box>
