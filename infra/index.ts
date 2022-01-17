@@ -2,11 +2,15 @@ import * as pulumi from "@pulumi/pulumi";
 import * as aws from "@pulumi/aws";
 import * as awsx from "@pulumi/awsx";
 
+// Create GithubAction Roles to push to ECR 
+const githubActionRole = new aws.iam.Role("githubActionRole", {
+    assumeRolePolicy: aws.iam.assumeRolePolicyForPrincipal({
+        Service: "ecr.amazonaws.com",
+    }),
+});
+
 // Default VPC 
 const defaultVPC = awsx.ec2.Vpc.getDefault()
-const publicSubnetIds = Promise.resolve(defaultVPC.publicSubnetIds)
-const test = '172.31.16.0/20'
-console.log(publicSubnetIds)
 
 // Create instance profile 
 const instanceProfileRole = new aws.iam.Role("windr-api-eb", {
@@ -73,7 +77,7 @@ const productionEnvironment = new aws.elasticbeanstalk.Environment("windr-api-pr
     //   namespace: 'aws:ec2:vpc',
     //   value: test,
     // },
-    
+
     {
       name: "IamInstanceProfile",
       namespace: "aws:autoscaling:launchconfiguration",
@@ -83,3 +87,4 @@ const productionEnvironment = new aws.elasticbeanstalk.Environment("windr-api-pr
 })
 
 export const endPointUrl = productionEnvironment.endpointUrl;
+export const GithubActionRole = githubActionRole;
