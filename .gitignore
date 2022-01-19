@@ -1,2 +1,4 @@
 node_modules
 windr.zip
+.github/workflows/deploy-to-ebs.yml
+.github/workflows/ifra.yml

@@ -2,89 +2,52 @@ import * as pulumi from "@pulumi/pulumi";
 import * as aws from "@pulumi/aws";
 import * as awsx from "@pulumi/awsx";
 
-// Create GithubAction Roles to push to ECR 
-const githubActionRole = new aws.iam.Role("githubActionRole", {
-    assumeRolePolicy: aws.iam.assumeRolePolicyForPrincipal({
-        Service: "ecr.amazonaws.com",
-    }),
+import { AccessKey as SetupECRAccessKey,  SecretKey as SetupECRSecretKey } from './setup-ecr';
+
+const config = new pulumi.Config();
+const appName = config.require("appName");
+const appEnvironment = config.require("appEnvironment");
+
+/* 
+  1- Elastic Beanstalk service role
+     https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/concepts-roles-service.html
+  
+  2- Elastic Beanstalk instance profile
+     https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/concepts-roles-instance.html
+
+  3- Managing Elastic Beanstalk service roles
+      https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/iam-servicerole.html
+
+  4- Service roles, instance profiles, and user policies
+    https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/concepts-roles.html
+
+  Use Docker image from ECR repository
+  https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/create_deploy_docker.container.console.html
+*/
+// (1) S3
+export const bucket = new aws.s3.Bucket("my-bucket");
+
+// (2) ECR
+export const ecr = new aws.ecr.Repository(`${appName}`, {
+  name: `${appName}`
 });
 
-// Default VPC 
-const defaultVPC = awsx.ec2.Vpc.getDefault()
-
-// Create instance profile 
-const instanceProfileRole = new aws.iam.Role("windr-api-eb", {
-  name: "windr-api-eb",
-  description: 'Elastic Beanstalk Role for the Windr API',
-  assumeRolePolicy: {
+// (3-1) Setup IamInstanceProfile
+export const instanceProfileRole = new aws.iam.Role(`${appName}-eb-ec2-role`, {
+  name: `${appName}-eb-ec2-role`,
+  description: "Role for EC2 managed by EB",
+  assumeRolePolicy: JSON.stringify({
     Version: "2012-10-17",
     Statement: [
       {
-        Effect: "Allow",
-        Sid: "",
         Action: "sts:AssumeRole",
         Principal: {
-          Service: "elasticbeanstalk.amazonaws.com"
+          Service: "ec2.amazonaws.com"
         },
-      }],
-    }
-})
-
-const instanceProfile = new aws.iam.InstanceProfile("instanceProfile", {
-    role: instanceProfileRole.name
-})
-
-
-// Create new RDS Instance of Postgres Database
-
-// Create new S3 Bucket for deployment
-const ebAppDeployBucket = new aws.s3.Bucket("windr-deployment", {})
-
-const ebAppDeployObject = new aws.s3.BucketObject("windr-deployment-object", {
-    bucket: ebAppDeployBucket.id,
-    key: "windr.zip",
-    source: "../windr.zip",
+        Effect: "Allow",
+        Sid: ""
+      }
+    ]
+  })
 });
 
-// Create new S3 Bucket for uploads
-
-// Create new ElasticBeanstalk Application
-const app = new aws.elasticbeanstalk.Application("windr", {
-  name: "windr-api",
-});
-
-const defaultAppVersion = new aws.elasticbeanstalk.ApplicationVersion("default", {
-  application: app,
-  bucket: ebAppDeployBucket.id,
-  description: "Windr API V 0.1",
-  key: ebAppDeployObject.id,
-});
-
-// Crete new ElasticBeanstalk Environment
-const productionEnvironment = new aws.elasticbeanstalk.Environment("windr-api-production", {
-  application: app,
-  version: defaultAppVersion,
-  solutionStackName: '64bit Amazon Linux 2 v5.4.9 running Node.js 14',
-  tier: 'WebServer',
-  settings: [
-    // {
-    //   name: 'VPCId',
-    //   namespace: 'aws:ec2:vpc',
-    //   value: defaultVPC.id,
-    // },
-    // {
-    //   name: 'Subnets',
-    //   namespace: 'aws:ec2:vpc',
-    //   value: test,
-    // },
-
-    {
-      name: "IamInstanceProfile",
-      namespace: "aws:autoscaling:launchconfiguration",
-      value: instanceProfile.name,
-    },
-  ]
-})
-
-export const endPointUrl = productionEnvironment.endpointUrl;
-export const GithubActionRole = githubActionRole;
