@@ -1,7 +1,12 @@
 {
-  "AWSEBDockerrunVersion": "3",
+  "AWSEBDockerrunVersion": "1",
   "Image": {
     "Name": "391161446417.dkr.ecr.eu-central-1.amazonaws.com/windr-image:latest",
     "Update": "true"
-  }
+  },
+  "Ports": [
+    {
+      "ContainerPort": "1337"
+    }
+  ]
 }

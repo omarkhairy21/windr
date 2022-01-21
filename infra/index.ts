@@ -23,7 +23,9 @@ const appEnvironment = config.require("appEnvironment");
 
   Use Docker image from ECR repository
   https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/create_deploy_docker.container.console.html
-*/
+
+  we need to give access to ec2 instance role to read the image from ECR repository
+  */
 // (1) S3
 export const bucket = new aws.s3.Bucket("my-bucket");
 

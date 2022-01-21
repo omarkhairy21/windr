@@ -9,7 +9,7 @@ RUN npm install
 
 COPY ./ ./
 
-ENV NODE_ENV dev
+ENV NODE_ENV staging
 
 RUN npm run build
 
