@@ -2,3 +2,7 @@ node_modules
 windr.zip
 .github/workflows/deploy-to-ebs.yml
 .github/workflows/ifra.yml
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
