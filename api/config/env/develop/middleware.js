@@ -1,7 +1,7 @@
 module.exports = ({ env }) => ({
   settings: {
     logger:{
-      level: "trace",
+      level: 'trace',
       requests: true,
     },
   },
