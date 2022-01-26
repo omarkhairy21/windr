@@ -87,15 +87,15 @@ const ebApp = new aws.elasticbeanstalk.Application(`${appName}-ebs-app`, {
   description: "Production Application for Windr",
 });
 
-const appVersion = new aws.elasticbeanstalk.ApplicationVersion('default', {
+const appVersion = new aws.elasticbeanstalk.ApplicationVersion('V 2.0', {
   application: ebApp.name,
-  description: "Production Version 1.0",
+  description: "Version 2.0",
   bucket: deploymentBucket.id,
   key: deploymentObject.key,
 });
 
 // 6 Create new Elastic Beanstalk Environment
-const ebEnv = new aws.elasticbeanstalk.Environment(`${appName}-ebs-env`, {
+const ebEnv = new aws.elasticbeanstalk.Environment(`${appName}-production`, {
   application: ebApp.name,
   version: appVersion,
   solutionStackName: "64bit Amazon Linux 2 v3.4.10 running Docker",
