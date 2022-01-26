@@ -13,6 +13,6 @@
         "forceConsistentCasingInFileNames": true
     },
     "files": [
-        "setup-ecr.ts"
+        "index.ts"
     ]
 }
