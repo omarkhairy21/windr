@@ -5,7 +5,7 @@ export const getEBConfig = (imageUrl: string) => ({
   AWSEBDockerrunVersion: '1',
   Image: {
     Name : imageUrl,
-    Update: true
+    Update: "true"
   },
   Ports: [
     {

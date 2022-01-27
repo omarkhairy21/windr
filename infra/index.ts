@@ -1,6 +1,5 @@
 import * as pulumi from "@pulumi/pulumi";
 import * as aws from "@pulumi/aws";
-import * as awsx from "@pulumi/awsx";
 import { getEBConfig } from "./utils";
 
 const region = pulumi.output(aws.getRegion().then(data => data.name));
@@ -63,9 +62,29 @@ const instanceProfileRole = new aws.iam.Role(`${appName}-ebs-ec2-role`, {
   })
 });
 
+new aws.iam.RolePolicyAttachment('windr-AmazonEC2ContainerRegistryReadOnly', {
+  role: instanceProfileRole,
+  policyArn: 'arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly',
+})
+new aws.iam.RolePolicyAttachment('windr-AWSElasticBeanstalkWorkerTier', {
+  role: instanceProfileRole,
+  policyArn: 'arn:aws:iam::aws:policy/AWSElasticBeanstalkWorkerTier',
+})
+
+new aws.iam.RolePolicyAttachment('windr-AWSElasticBeanstalkWebTier', {
+  role: instanceProfileRole,
+  policyArn: 'arn:aws:iam::aws:policy/AWSElasticBeanstalkWebTier',
+})
+
+new aws.iam.RolePolicyAttachment('windr-AWSElasticBeanstalkMulticontainerDocker', {
+  role: instanceProfileRole,
+  policyArn: 'arn:aws:iam::aws:policy/AWSElasticBeanstalkMulticontainerDocker',
+})
+
 const instanceProfile = new aws.iam.InstanceProfile(`${appName}-ebs-instance-profile`, {
   name: `${appName}-ebs-instance-profile`,
-  role: instanceProfileRole.id
+  role: instanceProfileRole.id,
+
 })
 
 // 4 Create new PostgresDb instance
@@ -87,9 +106,9 @@ const ebApp = new aws.elasticbeanstalk.Application(`${appName}-ebs-app`, {
   description: "Production Application for Windr",
 });
 
-const appVersion = new aws.elasticbeanstalk.ApplicationVersion('V 2.0', {
+const appVersion = new aws.elasticbeanstalk.ApplicationVersion('V3.0', {
   application: ebApp.name,
-  description: "Version 2.0",
+  description: "Version 3.0",
   bucket: deploymentBucket.id,
   key: deploymentObject.key,
 });

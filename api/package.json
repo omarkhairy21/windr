@@ -1,7 +1,7 @@
 {
   "name": "Windr.co",
   "private": true,
-  "version": "0.8.0",
+  "version": "0.9.0",
   "description": "Windr Backend App",
   "scripts": {
     "dev": "strapi develop",
