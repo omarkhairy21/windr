@@ -1,23 +1,11 @@
 import * as pulumi from "@pulumi/pulumi";
 import * as aws from "@pulumi/aws";
+import * as awsx from "@pulumi/awsx";
 import { getEBConfig } from "./utils";
 
 const region = pulumi.output(aws.getRegion().then(data => data.name));
 const accountId = pulumi.output(aws.getCallerIdentity().then(data => data.accountId));
 const appName = 'windr'
-
-
-// Default vpc and subnets
-// const defaultDefaultVpc = new aws.ec2.DefaultVpc("default-vpc", {
-//   tags: {
-//       Name: "Default VPC",
-//   },
-// });
-
-// new aws.iam.User('Github-Actions-Allow-Manage-ECR')
-// aws.iam.getPolicy({
-//   name: 'Github-Actions-Allow-Manage-ECR-Policy'
-// })
 
 // (2) ECR
 const ecr = new aws.ecr.Repository(`${appName}`, {
@@ -41,7 +29,12 @@ const imageUrl = pulumi.interpolate `${accountId}.dkr.ecr.${region}.amazonaws.co
       source: new pulumi.asset.StringAsset(json),
     })
 
-  })  
+  })
+
+ const uploadsBucket = new aws.s3.Bucket("windr-ebs-uploads", {
+    acl: "private",
+    forceDestroy: false,
+  });
 
 // (3-1) Setup IamInstanceProfile
 const instanceProfileRole = new aws.iam.Role(`${appName}-ebs-ec2-role`, {
@@ -87,6 +80,34 @@ const instanceProfile = new aws.iam.InstanceProfile(`${appName}-ebs-instance-pro
 
 })
 
+const user = new aws.iam.User("windr-user", {
+  name: "windr-user-allow-manage-s3-upload",
+  tags: {"Name": "windr-user-allow-manage-s3-upload"}
+})
+
+const userCredentials = new aws.iam.AccessKey("windr-user-access-key", {
+  user: user.name,
+})
+
+const userPolicy = new aws.iam.UserPolicy("windr-user-policy", {
+  user: user.name,
+  policy: JSON.stringify(
+    {
+      "Version": "2012-10-17",
+      "Statement": [
+          {
+              "Effect": "Allow",
+              "Action": [
+                  "s3:*",
+                  "s3-object-lambda:*"
+              ],
+              "Resource": "*"
+          }
+      ]
+  })
+})
+
+
 // 4 Create new PostgresDb instance
 const db = new aws.rds.Instance(`${appName}-db`, {
   engine: "postgres",
@@ -95,6 +116,7 @@ const db = new aws.rds.Instance(`${appName}-db`, {
   allocatedStorage: 10,
   username: "postgres",
   password: "postgres",
+  name: `${appName}-db`,
 });
 
 const { dbUsername, dbPassword } = pulumi.all([db.username, db.password])
@@ -128,11 +150,47 @@ const ebEnv = new aws.elasticbeanstalk.Environment(`${appName}-production`, {
       name: `DATABASE_USERNAME`,
       namespace: "aws:elasticbeanstalk:application:environment",
       value: dbUsername,
-    },{
+    },
+    {
       name: `DATABASE_PASSWORD`,
       namespace: "aws:elasticbeanstalk:application:environment",
       value: dbPassword,
     },
+    {
+      name: `DATABASE_NAME`,
+      namespace: "aws:elasticbeanstalk:application:environment",
+      value: db.name,
+    },
+    {
+      name: `DATABASE_HOST`,
+      namespace: "aws:elasticbeanstalk:application:environment",
+      value: db.endpoint,
+    },
+    {
+      name: `DATABASE_PORT`,
+      namespace: "aws:elasticbeanstalk:application:environment",
+      value: '5432',
+    },
+    {
+      name: `AWS_ACCESS_KEY_ID`,
+      namespace: "aws:elasticbeanstalk:application:environment",
+      value: userCredentials.id,
+    },
+    {
+      name: `AWS_ACCESS_SECRET`,
+      namespace: "aws:elasticbeanstalk:application:environment",
+      value: userCredentials.secret,
+    },
+    {
+      name: `AWS_S3_BUCKET_NAME`,
+      namespace: "aws:elasticbeanstalk:application:environment",
+      value: uploadsBucket.id,
+    },
+    {
+      name: `AWS_Region`,
+      namespace: "aws:elasticbeanstalk:application:environment",
+      value: region,
+    }
   ]
 });
 
