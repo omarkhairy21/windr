@@ -116,7 +116,7 @@ const db = new aws.rds.Instance(`${appName}-db`, {
   allocatedStorage: 10,
   username: "postgres",
   password: "postgres",
-  name: `${appName}-db`,
+  name: `${appName}`,
 });
 
 const { dbUsername, dbPassword } = pulumi.all([db.username, db.password])
