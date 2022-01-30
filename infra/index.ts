@@ -134,9 +134,9 @@ const ebApp = new aws.elasticbeanstalk.Application(`${appName}-ebs-app`, {
   description: "Production Application for Windr",
 });
 
-const appVersion = new aws.elasticbeanstalk.ApplicationVersion('V4.0', {
+const appVersion = new aws.elasticbeanstalk.ApplicationVersion('V4.2', {
   application: ebApp.name,
-  description: "Version 4.0",
+  description: "Version 4.2",
   bucket: deploymentBucket.id,
   key: deploymentObject.key,
 });
@@ -151,6 +151,11 @@ const ebEnv = new aws.elasticbeanstalk.Environment(`${appName}-production`, {
       name: "IamInstanceProfile",
       namespace: "aws:autoscaling:launchconfiguration",
       value: instanceProfile.id,
+    },
+    {
+      name: `NODE_ENV`,
+      namespace: "aws:elasticbeanstalk:application:environment",
+      value: 'staging',
     },
     {
       name: `DATABASE_USERNAME`,
@@ -170,7 +175,7 @@ const ebEnv = new aws.elasticbeanstalk.Environment(`${appName}-production`, {
     {
       name: `DATABASE_HOST`,
       namespace: "aws:elasticbeanstalk:application:environment",
-      value: db.endpoint.get().split(':')[0],
+      value: db.endpoint.apply(val => val.split(':')[0]),
     },
     {
       name: `DATABASE_PORT`,
