@@ -116,8 +116,14 @@ const db = new aws.rds.Instance(`${appName}-db`, {
   allocatedStorage: 10,
   username: "postgres",
   password: "postgres",
+  tags: {
+    Name: `${appName}-db-v4`,
+  },
+  finalSnapshotIdentifier: `${appName}-db-snapshot`,
+  skipFinalSnapshot: true,
   name: `${appName}`,
 });
+
 
 const { dbUsername, dbPassword } = pulumi.all([db.username, db.password])
   .apply(([dbUsername, dbPassword]) => ({dbUsername, dbPassword: dbPassword || '' }))
@@ -128,9 +134,9 @@ const ebApp = new aws.elasticbeanstalk.Application(`${appName}-ebs-app`, {
   description: "Production Application for Windr",
 });
 
-const appVersion = new aws.elasticbeanstalk.ApplicationVersion('V3.0', {
+const appVersion = new aws.elasticbeanstalk.ApplicationVersion('V4.0', {
   application: ebApp.name,
-  description: "Version 3.0",
+  description: "Version 4.0",
   bucket: deploymentBucket.id,
   key: deploymentObject.key,
 });
@@ -164,7 +170,7 @@ const ebEnv = new aws.elasticbeanstalk.Environment(`${appName}-production`, {
     {
       name: `DATABASE_HOST`,
       namespace: "aws:elasticbeanstalk:application:environment",
-      value: db.endpoint,
+      value: db.endpoint.get().split(':')[0],
     },
     {
       name: `DATABASE_PORT`,
