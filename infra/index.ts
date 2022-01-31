@@ -6,6 +6,8 @@ import { getEBConfig } from "./utils";
 const region = pulumi.output(aws.getRegion().then(data => data.name));
 const accountId = pulumi.output(aws.getCallerIdentity().then(data => data.accountId));
 const appName = 'windr'
+const dbUsername = 'postgres'
+const dbPassword = 'postgres'
 
 // (2) ECR
 const ecr = new aws.ecr.Repository(`${appName}`, {
@@ -35,6 +37,10 @@ const imageUrl = pulumi.interpolate `${accountId}.dkr.ecr.${region}.amazonaws.co
     acl: "private",
     forceDestroy: false,
   });
+
+const elbBucketLogs = new aws.s3.Bucket("windr-ebs-elb-bucket-logs", {
+  acl: 'log-delivery-write',
+})
 
 // (3-1) Setup IamInstanceProfile
 const instanceProfileRole = new aws.iam.Role(`${appName}-ebs-ec2-role`, {
@@ -107,7 +113,6 @@ const userPolicy = new aws.iam.UserPolicy("windr-user-policy", {
   })
 })
 
-
 // 4 Create new PostgresDb instance
 const db = new aws.rds.Instance(`${appName}-db`, {
   engine: "postgres",
@@ -124,29 +129,100 @@ const db = new aws.rds.Instance(`${appName}-db`, {
   name: `${appName}`,
 });
 
-
-const { dbUsername, dbPassword } = pulumi.all([db.username, db.password])
-  .apply(([dbUsername, dbPassword]) => ({dbUsername, dbPassword: dbPassword || '' }))
-
 // 5 Create new Elastic Beanstalk Application
 const ebApp = new aws.elasticbeanstalk.Application(`${appName}-ebs-app`, {
   name: `${appName}-ebs-app`,
   description: "Production Application for Windr",
 });
 
-const appVersion = new aws.elasticbeanstalk.ApplicationVersion('V4.2', {
+const appVersion = new aws.elasticbeanstalk.ApplicationVersion('V5.8', {
   application: ebApp.name,
-  description: "Version 4.2",
+  description: "Version 5.8",
   bucket: deploymentBucket.id,
   key: deploymentObject.key,
 });
 
+
+// Cetificate
+const cert = pulumi.output(
+  aws.acm.getCertificate({
+    domain: `api.windr.co`,
+  })
+)
+
+const loadBalancerSettings = [
+  {
+    name: `LoadBalancerType`,
+    namespace: "aws:elasticbeanstalk:environment",
+    value: 'application',
+  },
+  // https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-access-logs.html?icmpid=docs_elasticbeanstalk_console#access-logging-bucket-permissions
+  // { 
+  //   name: 'AccessLogsS3Bucket',
+  //   namespace: "aws:elbv2:loadbalancer",
+  //   value: elbBucketLogs.id,
+  // },
+  // { 
+  //   name: 'AccessLogsS3Enabled',
+  //   namespace: "aws:elbv2:loadbalancer",
+  //   value: 'true',
+  // },
+  { 
+    name: 'Protocol',
+    namespace: "aws:elbv2:listener:433",
+    value: 'HTTPS',
+  },
+  { 
+    name: 'SSLCertificateArns',
+    namespace: "aws:elbv2:listener:433",
+    value: cert.arn,
+  },
+]
+
+// console.log(db.dbSubnetGroupName.get(), db.securityGroupNames.get(), db.vpcSecurityGroupIds.get())
+console.log(cert.arn)
+const dbInstanceSettings = [
+  { 
+    name: 'DBEngine',
+    namespace: "aws:rds:dbinstance",
+    value: 'postgres',
+  },
+  { 
+    name: 'DBEngineVersion',
+    namespace: "aws:rds:dbinstance",
+    value: '13.4',
+  },
+  { 
+    name: 'DBInstanceClass',
+    namespace: "aws:rds:dbinstance",
+    value: 'db.t4g.micro',
+  },
+  { 
+    name: 'DBUser',
+    namespace: "aws:rds:dbinstance",
+    value: dbUsername
+  },
+  { 
+    name: 'DBPassword',
+    namespace: "aws:rds:dbinstance",
+    value: dbPassword,
+  },
+  { 
+    name: 'DBDeletionPolicy',
+    namespace: "aws:rds:dbinstance",
+    value: 'Snapshot',
+  },
+]
 // 6 Create new Elastic Beanstalk Environment
+// General Options https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/command-options-general.html
 const ebEnv = new aws.elasticbeanstalk.Environment(`${appName}-production`, {
   application: ebApp.name,
   version: appVersion,
   solutionStackName: "64bit Amazon Linux 2 v3.4.10 running Docker",
+  tier: 'WebServer',
+  cnamePrefix: `${appName}-production`,
   settings: [
+    ...loadBalancerSettings,
     {
       name: "IamInstanceProfile",
       namespace: "aws:autoscaling:launchconfiguration",
@@ -170,12 +246,12 @@ const ebEnv = new aws.elasticbeanstalk.Environment(`${appName}-production`, {
     {
       name: `DATABASE_NAME`,
       namespace: "aws:elasticbeanstalk:application:environment",
-      value: db.name,
+      value: 'db.name',
     },
     {
       name: `DATABASE_HOST`,
       namespace: "aws:elasticbeanstalk:application:environment",
-      value: db.endpoint.apply(val => val.split(':')[0]),
+      value: '',
     },
     {
       name: `DATABASE_PORT`,
