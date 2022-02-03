@@ -9,6 +9,8 @@ const appName = 'windr'
 const dbUsername = 'postgres'
 const dbPassword = 'postgres'
 
+const vpc = awsx.ec2.Vpc.getDefault();
+const subnetsIDs = pulumi.interpolate `${vpc.publicSubnetIds}`;
 // (2) ECR
 const ecr = new aws.ecr.Repository(`${appName}`, {
   name: `${appName}`,
@@ -130,14 +132,14 @@ const db = new aws.rds.Instance(`${appName}-db`, {
 });
 
 // 5 Create new Elastic Beanstalk Application
-const ebApp = new aws.elasticbeanstalk.Application(`${appName}-ebs-app`, {
-  name: `${appName}-ebs-app`,
+const ebApp = new aws.elasticbeanstalk.Application(`${appName}-production`, {
+  name: `${appName}-production`,
   description: "Production Application for Windr",
 });
 
-const appVersion = new aws.elasticbeanstalk.ApplicationVersion('V5.8', {
+const appVersion = new aws.elasticbeanstalk.ApplicationVersion('V6.1', {
   application: ebApp.name,
-  description: "Version 5.8",
+  description: "Version 6.1",
   bucket: deploymentBucket.id,
   key: deploymentObject.key,
 });
@@ -154,38 +156,40 @@ const loadBalancerSettings = [
   {
     name: `LoadBalancerType`,
     namespace: "aws:elasticbeanstalk:environment",
-    value: 'application',
+    value: 'classic',
   },
-  // https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-access-logs.html?icmpid=docs_elasticbeanstalk_console#access-logging-bucket-permissions
-  // { 
-  //   name: 'AccessLogsS3Bucket',
-  //   namespace: "aws:elbv2:loadbalancer",
-  //   value: elbBucketLogs.id,
-  // },
-  // { 
-  //   name: 'AccessLogsS3Enabled',
-  //   namespace: "aws:elbv2:loadbalancer",
-  //   value: 'true',
-  // },
   { 
-    name: 'Protocol',
-    namespace: "aws:elbv2:listener:433",
+    name: 'ListenerProtocol',
+    namespace: "aws:elb:listener:443",
     value: 'HTTPS',
   },
   { 
-    name: 'SSLCertificateArns',
-    namespace: "aws:elbv2:listener:433",
+    name: 'InstanceProtocol',
+    namespace: "aws:elb:listener:443",
+    value: 'HTTP',
+  },
+  { 
+    name: 'InstancePort',
+    namespace: "aws:elb:listener:443",
+    value: '80',
+  },
+  { 
+    name: 'SSLCertificateId',
+    namespace: "aws:elb:listener:443",
     value: cert.arn,
   },
 ]
 
-// console.log(db.dbSubnetGroupName.get(), db.securityGroupNames.get(), db.vpcSecurityGroupIds.get())
-console.log(cert.arn)
 const dbInstanceSettings = [
   { 
     name: 'DBEngine',
     namespace: "aws:rds:dbinstance",
     value: 'postgres',
+  },
+  { 
+    name: 'HasCoupledDatabase',
+    namespace: "aws:rds:dbinstance",
+    value: 'true',
   },
   { 
     name: 'DBEngineVersion',
@@ -213,6 +217,39 @@ const dbInstanceSettings = [
     value: 'Snapshot',
   },
 ]
+
+const otherSettings = [
+  {
+    name: "IamInstanceProfile",
+    namespace: "aws:autoscaling:launchconfiguration",
+    value: instanceProfile.id,
+  },
+  {
+    name: `NODE_ENV`,
+    namespace: "aws:elasticbeanstalk:application:environment",
+    value: 'production',
+  },
+  {
+    name: `AWS_ACCESS_KEY_ID`,
+    namespace: "aws:elasticbeanstalk:application:environment",
+    value: userCredentials.id,
+  },
+  {
+    name: `AWS_ACCESS_SECRET`,
+    namespace: "aws:elasticbeanstalk:application:environment",
+    value: userCredentials.secret,
+  },
+  {
+    name: `AWS_S3_BUCKET_NAME`,
+    namespace: "aws:elasticbeanstalk:application:environment",
+    value: uploadsBucket.id,
+  },
+  {
+    name: `AWS_Region`,
+    namespace: "aws:elasticbeanstalk:application:environment",
+    value: region,
+  }
+]
 // 6 Create new Elastic Beanstalk Environment
 // General Options https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/command-options-general.html
 const ebEnv = new aws.elasticbeanstalk.Environment(`${appName}-production`, {
@@ -223,62 +260,10 @@ const ebEnv = new aws.elasticbeanstalk.Environment(`${appName}-production`, {
   cnamePrefix: `${appName}-production`,
   settings: [
     ...loadBalancerSettings,
-    {
-      name: "IamInstanceProfile",
-      namespace: "aws:autoscaling:launchconfiguration",
-      value: instanceProfile.id,
-    },
-    {
-      name: `NODE_ENV`,
-      namespace: "aws:elasticbeanstalk:application:environment",
-      value: 'staging',
-    },
-    {
-      name: `DATABASE_USERNAME`,
-      namespace: "aws:elasticbeanstalk:application:environment",
-      value: dbUsername,
-    },
-    {
-      name: `DATABASE_PASSWORD`,
-      namespace: "aws:elasticbeanstalk:application:environment",
-      value: dbPassword,
-    },
-    {
-      name: `DATABASE_NAME`,
-      namespace: "aws:elasticbeanstalk:application:environment",
-      value: 'db.name',
-    },
-    {
-      name: `DATABASE_HOST`,
-      namespace: "aws:elasticbeanstalk:application:environment",
-      value: '',
-    },
-    {
-      name: `DATABASE_PORT`,
-      namespace: "aws:elasticbeanstalk:application:environment",
-      value: '5432',
-    },
-    {
-      name: `AWS_ACCESS_KEY_ID`,
-      namespace: "aws:elasticbeanstalk:application:environment",
-      value: userCredentials.id,
-    },
-    {
-      name: `AWS_ACCESS_SECRET`,
-      namespace: "aws:elasticbeanstalk:application:environment",
-      value: userCredentials.secret,
-    },
-    {
-      name: `AWS_S3_BUCKET_NAME`,
-      namespace: "aws:elasticbeanstalk:application:environment",
-      value: uploadsBucket.id,
-    },
-    {
-      name: `AWS_Region`,
-      namespace: "aws:elasticbeanstalk:application:environment",
-      value: region,
-    }
+    ...dbInstanceSettings,
+    ...otherSettings,
   ]
 });
+
 
 export const endpoint = ebEnv.endpointUrl

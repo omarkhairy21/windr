@@ -1,4 +1,5 @@
 module.exports = ({ env }) => {
+  console.log(env)
   return {
     defaultConnection: 'default',
     connections: {
@@ -6,11 +7,11 @@ module.exports = ({ env }) => {
         connector: 'bookshelf',
         settings: {
           client: 'postgres',
-          host: env('DATABASE_HOST', '127.0.0.1'),
-          port: env.int('DATABASE_PORT', 5432),
-          database: env('DATABASE_NAME', 'windr'),
-          username: env('DATABASE_USERNAME', ''),
-          password: env('DATABASE_PASSWORD', ''),
+          host: env('RDS_HOSTNAME', '127.0.0.1'),
+          port: env.int('RDS_PORT', 5432),
+          database: env('RDS_DB_NAME', 'windr'),
+          username: env('RDS_USERNAME', ''),
+          password: env('RDS_PASSWORD', ''),
         },
         options: {
           debug: true, //env.bool('ENABLE_DATABASE_LOGS'),
