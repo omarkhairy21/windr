@@ -10,10 +10,6 @@ export function useAuth(isProtectedRoute = true): any {
     },
   })
 
-  if (status === 'loading') {
-    console.log('Loading Auth')
-    return <LoadingSpinner />
-  }
-
+  if (status === 'loading') return <LoadingSpinner />
   return { authToken: session?.jwt, userId: session?.id, userEmail: session?.user?.email }
 }

@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { Box } from '@chakra-ui/react'
-
 import { TipTapEditor } from '@components/Editor/TipTapEditor'
 import { EditorHeader } from '@components/Editor/EditorHeader'
 import { Layout } from '@components/Layout'
@@ -18,10 +17,8 @@ export default function Site() {
 
   const [content, setContent] = useState<Content>('Loading!!')
   const { site, isLoading, error } = useSite(id)
-
   useEffect(() => {
     if (site?.content) {
-      console.log(site?.content)
       setContent(site?.content)
     }
   }, [site?.content])
