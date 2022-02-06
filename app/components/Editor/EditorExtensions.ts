@@ -21,9 +21,11 @@ export const EditorExtensions = [
   }),
   Underline,
   Image,
-  // Link.configure({
-  //   openOnClick: false,
-  // })
+  //   Link.configure({
+  //     HTMLAttributes: {
+  //       target: '_blank',
+  //     },
+  //   }),
 ]
 
 export function getHTML(content: JSON) {
