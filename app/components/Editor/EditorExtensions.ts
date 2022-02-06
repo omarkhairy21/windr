@@ -3,6 +3,7 @@ import StarterKit from '@tiptap/starter-kit'
 import TextAlign from '@tiptap/extension-text-align'
 import Focus from '@tiptap/extension-focus'
 import Underline from '@tiptap/extension-underline'
+import Link from '@tiptap/extension-link'
 import { generateHTML } from '@tiptap/html'
 import Placeholder from '@tiptap/extension-placeholder'
 
@@ -20,6 +21,9 @@ export const EditorExtensions = [
   }),
   Underline,
   Image,
+  // Link.configure({
+  //   openOnClick: false,
+  // })
 ]
 
 export function getHTML(content: JSON) {
