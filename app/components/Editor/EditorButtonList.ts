@@ -32,7 +32,10 @@ export const getEditorButtonList = (editor: Editor): IEditorButton[] => [
   {
     name: EditorButtonEnums.Header1,
     icon: RiH1,
-    executeEditorCommand: () => editor.chain().focus().toggleHeading({ level: 1 }).run(),
+    executeEditorCommand: () => {
+      console.log('Clicked', editor)
+      return editor.chain().focus().toggleHeading({ level: 1 }).run()
+    },
   },
   {
     name: EditorButtonEnums.Header2,

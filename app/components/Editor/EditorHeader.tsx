@@ -64,7 +64,11 @@ export function EditorHeader({ content }: EditorHeaderProps) {
         loadingText="Saving">
         {hasSaved ? 'Saved!' : 'Save'}
       </Button>
-      <Button bgColor="blue.500" color="gray.50" sizes={['sm', 'md']}>
+      <Button
+        bgColor="blue.500"
+        color="gray.50"
+        sizes={['sm', 'md']}
+        onClick={() => 'Hello World!'}>
         Publish
       </Button>
     </Flex>

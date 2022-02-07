@@ -49,8 +49,8 @@ export const Buttons_Used_In_BubbleMenu = [
   EditorButtonEnums.AlignCenter,
   EditorButtonEnums.AlignRight,
   EditorButtonEnums.Blockquote,
-  EditorButtonEnums.OrderedList,
-  EditorButtonEnums.UnorderedList,
+  // EditorButtonEnums.OrderedList,
+  // EditorButtonEnums.UnorderedList,
   EditorButtonEnums.Link,
   EditorButtonEnums.Code,
 ]

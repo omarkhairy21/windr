@@ -6,6 +6,7 @@ import Underline from '@tiptap/extension-underline'
 import Link from '@tiptap/extension-link'
 import { generateHTML } from '@tiptap/html'
 import Placeholder from '@tiptap/extension-placeholder'
+import FloatingMenu from '@tiptap/extension-floating-menu'
 
 export const EditorExtensions = [
   StarterKit,
@@ -21,11 +22,11 @@ export const EditorExtensions = [
   }),
   Underline,
   Image,
-  //   Link.configure({
-  //     HTMLAttributes: {
-  //       target: '_blank',
-  //     },
-  //   }),
+  Link.configure({
+    HTMLAttributes: {
+      target: '_blank',
+    },
+  }),
 ]
 
 export function getHTML(content: JSON) {

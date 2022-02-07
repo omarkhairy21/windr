@@ -1,6 +1,6 @@
 .has-focus {
   border-radius: 2px;
-  box-shadow: 0 0 0 3px #bfe7f8;
+  box-shadow: 0 0 0 1px #bfe7f8;
   padding: 0.8rem 0rem 0.8rem 0.8rem;
 }
 
@@ -71,6 +71,14 @@ h6 {
 
 .ProseMirror blockquote p {
   display: inline;
+}
+
+.ProseMirror code {
+  background-color: #e7e9f5;
+  border-radius: 0.25em;
+  color: #616161;
+  font-size: 0.9rem;
+  padding: 0.25em;
 }
 
 .ProseMirror p.is-editor-empty:first-child::before {

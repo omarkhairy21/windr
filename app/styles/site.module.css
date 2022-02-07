@@ -65,6 +65,14 @@
   display: inline;
 }
 
+.wrapper code {
+  background-color: rgba(#616161, 0.1);
+  border-radius: 0.25em;
+  color: #616161;
+  font-size: 0.9rem;
+  padding: 0.25em;
+}
+
 @media only screen and (min-width: 768px) {
   .wrapper {
     margin: 1rem 10rem;
