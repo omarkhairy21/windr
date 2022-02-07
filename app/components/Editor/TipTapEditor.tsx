@@ -13,9 +13,10 @@ import {
   Menu,
   MenuList,
   MenuItem,
+  Portal,
 } from '@chakra-ui/react'
 import { EditorContent, BubbleMenu, FloatingMenu, useEditor, Content } from '@tiptap/react'
-import { useEffect, useMemo, useCallback, useState } from 'react'
+import { useEffect, useMemo, useCallback, useState, useRef } from 'react'
 import { Bubble_Menu_Style, Buttons_Used_In_BubbleMenu, Buttons_Used_In_FixedMenu } from './config'
 import { getEditorButtonList } from './EditorButtonList'
 import { MobileMenuDrawer } from './MobileMenuDrawer'
@@ -37,9 +38,11 @@ export function TipTapEditor({ siteContent, saveContentOnEditorUpdate, siteId }:
   })
   const { isOpen: isDrawerOpen, onOpen: onOpenDrawer, onClose: onCloseDrawer } = useDisclosure()
   const { isOpen: isModalOpen, onOpen: onModalOpen, onClose: onCloseModal } = useDisclosure()
-  const { isOpen: isMenuOpen, onOpen: onMenuOpen, onClose: onMenuClose } = useMenu()
+  const { isOpen: isMenuOpen, onOpen: onMenuOpen, onClose: onMenuClose, menuRef } = useMenu()
   const [isLargerThan1280] = useMediaQuery('(min-width: 1280px)')
   const [imageSrc, setImageSrc] = useState<null | string>(null)
+  const editorContentElement = useRef(null)
+  const floatingMenu = useRef(null)
 
   const BubbleMenuButtons = useMemo(
     () =>
@@ -81,7 +84,9 @@ export function TipTapEditor({ siteContent, saveContentOnEditorUpdate, siteId }:
   }, [imageSrc, editor])
 
   useEffect(() => {
+    console.log(FloatingMenuButtons)
     editor?.on('update', ({ editor }: any) => {
+      console.log(editor)
       dispatchSaveContent(editor.getJSON())
     })
   }, [editor, dispatchSaveContent])
@@ -117,7 +122,7 @@ export function TipTapEditor({ siteContent, saveContentOnEditorUpdate, siteId }:
           siteId={siteId}
         />
       )}
-      <Box p="1">
+      <Box p="1" ref={floatingMenu}>
         <FloatingMenu editor={editor} tippyOptions={{ zIndex: 1, placement: 'left' }}>
           <IconButton
             onClick={() => (isLargerThan1280 ? onMenuOpen() : onOpenDrawer())}
@@ -127,10 +132,15 @@ export function TipTapEditor({ siteContent, saveContentOnEditorUpdate, siteId }:
             size={'sm'}
             icon={<AddIcon />}
           />
-          {isMenuOpen && (
-            <Menu isOpen={isMenuOpen} onClose={onMenuClose} placement="auto-end" size="xl">
-              <MenuList whiteSpace="unset" bg="gray.50" p="1" ml="4" mt="4">
-                <VStack>
+          <Portal containerRef={floatingMenu}>
+            {isMenuOpen && (
+              <Menu
+                isOpen={isMenuOpen}
+                onClose={onMenuClose}
+                closeOnSelect={false}
+                placement="auto-end"
+                size="xl">
+                <MenuList whiteSpace="unset" bg="gray.50" p="1" ml="4" mt="4">
                   {FloatingMenuButtons?.map(EditorButton => (
                     <MenuItem
                       onClick={EditorButton.executeEditorCommand}
@@ -151,10 +161,10 @@ export function TipTapEditor({ siteContent, saveContentOnEditorUpdate, siteId }:
                     </MenuItem>
                   ))}
                   <ImageMenuItem handleClick={onModalOpen} />
-                </VStack>
-              </MenuList>
-            </Menu>
-          )}
+                </MenuList>
+              </Menu>
+            )}
+          </Portal>
         </FloatingMenu>
         <BubbleMenu editor={editor} tippyOptions={{ maxWidth: 'none' }}>
           <HStack
@@ -182,7 +192,7 @@ export function TipTapEditor({ siteContent, saveContentOnEditorUpdate, siteId }:
             ))}
           </HStack>
         </BubbleMenu>
-        <EditorContent editor={editor} />
+        <EditorContent editor={editor} ref={editorContentElement} />
       </Box>
       <Box
         w="full"
