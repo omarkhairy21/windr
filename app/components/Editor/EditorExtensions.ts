@@ -1,12 +1,11 @@
 import Image from '@tiptap/extension-image'
 import StarterKit from '@tiptap/starter-kit'
 import TextAlign from '@tiptap/extension-text-align'
-import Focus from '@tiptap/extension-focus'
+// import Focus from '@tiptap/extension-focus'
 import Underline from '@tiptap/extension-underline'
 import Link from '@tiptap/extension-link'
 import { generateHTML } from '@tiptap/html'
 import Placeholder from '@tiptap/extension-placeholder'
-import FloatingMenu from '@tiptap/extension-floating-menu'
 
 export const EditorExtensions = [
   StarterKit,
@@ -17,9 +16,9 @@ export const EditorExtensions = [
     placeholder: 'Type anything..',
     showOnlyCurrent: true,
   }),
-  Focus.configure({
-    className: 'has-focus',
-  }),
+  // Focus.configure({
+  //   className: 'has-focus',
+  // }),
   Underline,
   Image,
   Link.configure({

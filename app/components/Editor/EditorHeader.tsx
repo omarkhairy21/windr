@@ -49,28 +49,30 @@ export function EditorHeader({ content }: EditorHeaderProps) {
 
   return (
     <Flex
+      pos="fixed"
+      top="0"
+      left="0"
+      right="0"
       justify="flex-end"
-      p={['2', '3', '4']}
+      backgroundColor="gray.50"
+      p={['1', '3', '4']}
       borderStyle={'solid'}
-      borderColor="gray.100"
       borderBottom="1">
-      <Button
-        colorScheme="green"
-        mr="2"
-        sizes={['sm', 'md']}
-        isLoading={isLoading}
-        disabled
-        key="saveButton"
-        loadingText="Saving">
-        {hasSaved ? 'Saved!' : 'Save'}
-      </Button>
-      <Button
-        bgColor="blue.500"
-        color="gray.50"
-        sizes={['sm', 'md']}
-        onClick={() => 'Hello World!'}>
-        Publish
-      </Button>
+      <Flex justify="center" align="center">
+        <Button
+          color="gray.800"
+          mr="2"
+          variant="ghost"
+          isLoading={isLoading}
+          disabled
+          key="saveButton"
+          loadingText="Saving">
+          {hasSaved ? 'Saved!' : 'Save'}
+        </Button>
+        <Button bgColor="blue.500" color="gray.50" size="sm">
+          Publish
+        </Button>
+      </Flex>
     </Flex>
   )
 }
