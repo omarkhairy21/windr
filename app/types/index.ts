@@ -39,7 +39,7 @@ export interface Owner {
 export interface IEditorButton {
   name: string
   icon: IconType
-  executeEditorCommand: () => any
+  executeEditorCommand: () => boolean
 }
 
 export interface IEditorDrawerButton extends IEditorButton {

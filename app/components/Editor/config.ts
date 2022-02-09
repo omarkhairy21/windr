@@ -19,6 +19,8 @@ export const EditorButtonEnums = {
   Link: 'Link',
   Image: 'Image',
   Video: 'Video',
+  Code: 'Code',
+  CodeBlock: 'CodeBlock',
 }
 
 export const Bubble_Menu_Style = {
@@ -47,8 +49,10 @@ export const Buttons_Used_In_BubbleMenu = [
   EditorButtonEnums.AlignCenter,
   EditorButtonEnums.AlignRight,
   EditorButtonEnums.Blockquote,
-  EditorButtonEnums.OrderedList,
-  EditorButtonEnums.UnorderedList,
+  // EditorButtonEnums.OrderedList,
+  // EditorButtonEnums.UnorderedList,
+  EditorButtonEnums.Link,
+  EditorButtonEnums.Code,
 ]
 
 export const Buttons_Used_In_FixedMenu = [

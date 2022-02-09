@@ -24,6 +24,7 @@ export function MobileMenuDrawer({ onClose, isOpen, children }: MobileMenuDrawer
       returnFocusOnClose={false}>
       <DrawerOverlay />
       <DrawerContent
+        roundedTop="lg"
         style={{
           background: 'rgba(255, 255, 255, 0.75)',
           boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',

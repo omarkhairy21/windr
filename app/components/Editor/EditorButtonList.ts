@@ -18,6 +18,8 @@ import {
   RiStrikethrough,
   RiListOrdered,
   RiListUnordered,
+  RiCodeSSlashFill,
+  RiBracesFill,
 } from 'react-icons/ri'
 import { EditorButtonEnums } from './config'
 
@@ -106,5 +108,25 @@ export const getEditorButtonList = (editor: Editor): IEditorButton[] => [
     name: EditorButtonEnums.UnorderedList,
     icon: RiListUnordered,
     executeEditorCommand: () => editor.chain().focus().toggleBulletList().run(),
+  },
+  // {
+  //   name: EditorButtonEnums.Link,
+  //   icon: RiLink,
+  //   executeEditorCommand: url =>
+  //     editor
+  //       .chain()
+  //       .focus()
+  //       .toggleLink({ href: url || '' })
+  //       .run(),
+  // },
+  {
+    name: EditorButtonEnums.Code,
+    icon: RiCodeSSlashFill,
+    executeEditorCommand: () => editor.chain().focus().toggleCode().run(),
+  },
+  {
+    name: EditorButtonEnums.CodeBlock,
+    icon: RiBracesFill,
+    executeEditorCommand: () => editor.chain().focus().toggleCodeBlock().run(),
   },
 ]

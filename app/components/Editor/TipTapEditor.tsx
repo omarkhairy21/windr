@@ -2,14 +2,12 @@ import { EditorExtensions } from './EditorExtensions'
 import {
   Box,
   HStack,
-  VStack,
   Icon,
   useDisclosure,
   useMediaQuery,
   SimpleGrid,
   Button,
   IconButton,
-  useMenu,
   Menu,
   MenuList,
   MenuItem,
@@ -37,7 +35,7 @@ export function TipTapEditor({ siteContent, saveContentOnEditorUpdate, siteId }:
   })
   const { isOpen: isDrawerOpen, onOpen: onOpenDrawer, onClose: onCloseDrawer } = useDisclosure()
   const { isOpen: isModalOpen, onOpen: onModalOpen, onClose: onCloseModal } = useDisclosure()
-  const { isOpen: isMenuOpen, onOpen: onMenuOpen, onClose: onMenuClose } = useMenu()
+  const { isOpen: isMenuOpen, onOpen: onMenuOpen, onClose: onMenuClose } = useDisclosure()
   const [isLargerThan1280] = useMediaQuery('(min-width: 1280px)')
   const [imageSrc, setImageSrc] = useState<null | string>(null)
 
@@ -130,28 +128,20 @@ export function TipTapEditor({ siteContent, saveContentOnEditorUpdate, siteId }:
           {isMenuOpen && (
             <Menu isOpen={isMenuOpen} onClose={onMenuClose} placement="auto-end" size="xl">
               <MenuList whiteSpace="unset" bg="gray.50" p="1" ml="4" mt="4">
-                <VStack>
-                  {FloatingMenuButtons?.map(EditorButton => (
-                    <MenuItem
-                      onClick={EditorButton.executeEditorCommand}
-                      key={EditorButton.name}
-                      boxShadow="xl"
-                      bg="white"
-                      _hover={{ bg: 'blue.100' }}
-                      border="none"
-                      borderRadius="0">
-                      <Icon
-                        as={EditorButton.icon}
-                        boxSize="6"
-                        size="24px"
-                        color="gray.700"
-                        mr="2"
-                      />{' '}
-                      {EditorButton.name}
-                    </MenuItem>
-                  ))}
-                  <ImageMenuItem handleClick={onModalOpen} />
-                </VStack>
+                {FloatingMenuButtons?.map(EditorButton => (
+                  <MenuItem
+                    onClick={EditorButton.executeEditorCommand}
+                    key={EditorButton.name}
+                    boxShadow="xl"
+                    bg="white"
+                    _hover={{ bg: 'blue.100' }}
+                    border="none"
+                    borderRadius="0">
+                    <Icon as={EditorButton.icon} boxSize="6" size="24px" color="gray.700" mr="2" />{' '}
+                    {EditorButton.name}
+                  </MenuItem>
+                ))}
+                <ImageMenuItem handleClick={onModalOpen} />
               </MenuList>
             </Menu>
           )}
