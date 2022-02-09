@@ -14,7 +14,7 @@ import {
 } from '@chakra-ui/react'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { useCallback, useEffect } from 'react'
-import { debounce } from 'lodash'
+import debounce from 'lodash.debounce'
 
 import { useSites } from 'hooks/useSites'
 import { useAuth } from '@hooks/useAuth'
@@ -88,7 +88,9 @@ export function SiteFom({ onCloseDrawer, siteId }: ISiteFormProps) {
   const checkSubDomain = useCallback(
     debounce(async (subDomain: string) => {
       const isUsed = await checkIfSubDomainUsed(subDomain)
-      if (isUsed) { return setError('subDomain', { type: 'validate', message: 'This domain already used'}) }
+      if (isUsed) {
+        return setError('subDomain', { type: 'validate', message: 'This domain already used' })
+      }
       return clearErrors('subDomain')
     }, 400),
     [],
@@ -136,16 +138,18 @@ export function SiteFom({ onCloseDrawer, siteId }: ISiteFormProps) {
               minLength: { value: 3, message: 'Minimum length should be 3' },
               setValueAs: (value: string) => value.trim().toLowerCase(),
               validate: {
-                hasSpecialCharacters: value => value?.match(/\s/g) ? 'Sub-Domain should not contain spaces' : true,
-                shouldBeCharacters: value => value?.match(/[^a-z0-9-]/g) ? 'Sub-Domain should only contain characters and numbers' : true,
-              }
+                hasSpecialCharacters: value =>
+                  value?.match(/\s/g) ? 'Sub-Domain should not contain spaces' : true,
+                shouldBeCharacters: value =>
+                  value?.match(/[^a-z0-9-]/g)
+                    ? 'Sub-Domain should only contain characters and numbers'
+                    : true,
+              },
             })}
           />
           <InputRightAddon>windr.co</InputRightAddon>
         </InputGroup>
-        <FormErrorMessage>
-          {errors.subDomain && errors.subDomain.message}
-        </FormErrorMessage>
+        <FormErrorMessage>{errors.subDomain && errors.subDomain.message}</FormErrorMessage>
         <FormHelperText>
           {getValues('subDomain') && `final url: https://${getValues('subDomain')}.windr.co`}
         </FormHelperText>
