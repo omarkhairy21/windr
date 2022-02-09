@@ -19,7 +19,7 @@ import { getEditorButtonList } from './EditorButtonList'
 import { MobileMenuDrawer } from './MobileMenuDrawer'
 import { ImageButton, ImageMenuItem } from './ImageButton'
 import { SetImageModal } from './SetImageModal'
-import { debounce } from 'lodash'
+import debounce from 'lodash.debounce'
 import { AddIcon } from '@chakra-ui/icons'
 
 interface IEditorProps {
