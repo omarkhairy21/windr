@@ -1,13 +1,15 @@
-import { Button, Flex } from '@chakra-ui/react'
-import { API_URL } from '@constants'
+import { Button, Flex, Box, IconButton } from '@chakra-ui/react'
+import { HamburgerIcon } from '@chakra-ui/icons'
 import { useCallback, useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { useSite } from 'hooks/useSite'
 import { Content } from '@tiptap/react'
 import { useAuth } from '@hooks/useAuth'
+import { API_URL } from '@constants'
 
 interface EditorHeaderProps {
   content: Content
+  onOpenNavItemsDrawer: () => void
 }
 
 const saveSiteContent = async (token: string | null, content: any, id: any) => {
@@ -21,7 +23,7 @@ const saveSiteContent = async (token: string | null, content: any, id: any) => {
   })
 }
 
-export function EditorHeader({ content }: EditorHeaderProps) {
+export function EditorHeader({ content, onOpenNavItemsDrawer }: EditorHeaderProps) {
   const { authToken } = useAuth()
   const {
     query: { id },
@@ -48,31 +50,39 @@ export function EditorHeader({ content }: EditorHeaderProps) {
   }, [hasSaved, setHasSaved])
 
   return (
-    <Flex
-      pos="fixed"
-      top="0"
-      left="0"
-      right="0"
-      justify="flex-end"
-      backgroundColor="gray.50"
-      p={['1', '3', '4']}
-      borderStyle={'solid'}
-      borderBottom="1">
-      <Flex justify="center" align="center">
-        <Button
-          color="gray.800"
-          mr="2"
-          variant="ghost"
-          isLoading={isLoading}
-          disabled
-          key="saveButton"
-          loadingText="Saving">
-          {hasSaved ? 'Saved!' : 'Save'}
-        </Button>
-        <Button bgColor="blue.500" color="gray.50" size="sm">
-          Publish
-        </Button>
-      </Flex>
-    </Flex>
+    <Box pos="fixed" w={{ base: 'full', lg: '80%' }} zIndex="10" h="7">
+      <Box position="relative">
+        <Flex justify="space-between" p={['1', '2']} bg="gray.50" boxShadow="sm">
+          <Box p={'1'}>
+            <IconButton
+              onClick={onOpenNavItemsDrawer}
+              bg="gray.100"
+              boxShadow="sm"
+              size="md"
+              aria-label="open menu"
+              variant="outline"
+              color={'gray.500'}
+              display={{ sm: 'block', lg: 'none' }}
+              icon={<HamburgerIcon />}
+            />
+          </Box>
+          <Flex justify="space-around" align="center">
+            <Button
+              color="gray.900"
+              mr="1"
+              variant="ghost"
+              isLoading={isLoading}
+              disabled
+              key="saveButton"
+              loadingText="Saving">
+              {hasSaved ? 'Saved!' : 'Save'}
+            </Button>
+            <Button bgColor="whatsapp.500" color="gray.50" size="sm">
+              Publish
+            </Button>
+          </Flex>
+        </Flex>
+      </Box>
+    </Box>
   )
 }

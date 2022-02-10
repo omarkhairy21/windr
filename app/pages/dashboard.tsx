@@ -10,6 +10,12 @@ import { useEffect, useState } from 'react'
 
 export default function Dashboard() {
   const { isOpen, onOpen, onClose } = useDisclosure()
+
+  const {
+    isOpen: isNavItemsDrawerOpen,
+    onOpen: onOpenNavItemsDrawer,
+    onClose: onCloseNavItemsDrawer,
+  } = useDisclosure()
   const [siteSelectedToEdit, setSiteSelectedToEdit] = useState<undefined | string>(undefined)
   useEffect(() => {
     if (siteSelectedToEdit) {
@@ -18,7 +24,10 @@ export default function Dashboard() {
   }, [siteSelectedToEdit, onOpen])
 
   return (
-    <Layout>
+    <Layout
+      onOpenNavItemsDrawer={onOpenNavItemsDrawer}
+      onCloseNavItemsDrawer={onCloseNavItemsDrawer}
+      isNavItemsDrawerOpen={isNavItemsDrawerOpen}>
       {isOpen && <CreateSiteDrawer isOpen={isOpen} onClose={onClose} siteId={siteSelectedToEdit} />}
       <Container maxW="container.sm" py="6">
         <DashboardHeader

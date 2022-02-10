@@ -187,7 +187,7 @@ export function TipTapEditor({ siteContent, saveContentOnEditorUpdate, siteId }:
         right="0"
         left="0"
         bg="gray.300"
-        zIndex={1000}
+        zIndex={4}
         shadow="md">
         <HStack spacing={[1, 4, 8]} justify={{ base: 'center' }}>
           {FixedMenuButtons?.map(EditorButton => (

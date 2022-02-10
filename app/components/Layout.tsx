@@ -1,5 +1,5 @@
 import { Sidebar } from './Sidebar'
-import { Flex, Box, IconButton, useDisclosure } from '@chakra-ui/react'
+import { Flex, Box, IconButton } from '@chakra-ui/react'
 import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons'
 import * as React from 'react'
 import { NavItemsDrawer } from './Drawers/NavItemsDrawer'
@@ -7,10 +7,18 @@ import { NavItemsDrawer } from './Drawers/NavItemsDrawer'
 type Props = {
   children: React.ReactNode
   showNavItems?: boolean
+  isNavItemsDrawerOpen: boolean
+  onCloseNavItemsDrawer: () => void
+  onOpenNavItemsDrawer: () => void
 }
 
-export function Layout({ children, showNavItems = true }: Props) {
-  const { isOpen, onOpen, onClose } = useDisclosure()
+export function Layout({
+  children,
+  showNavItems = true,
+  isNavItemsDrawerOpen,
+  onOpenNavItemsDrawer,
+  onCloseNavItemsDrawer,
+}: Props) {
   return (
     <Flex h="full" minH="100vh" direction={{ base: 'column', lg: 'row' }}>
       <Sidebar display={{ base: 'none', lg: 'unset' }} position="fixed" />
@@ -27,14 +35,14 @@ export function Layout({ children, showNavItems = true }: Props) {
           bg="gray.50"
           zIndex={1000}
           shadow="inner"
-          onClick={onOpen}
+          onClick={onOpenNavItemsDrawer}
           rounded="none"
-          icon={isOpen ? <CloseIcon w={5} h={5} /> : <HamburgerIcon w={7} h={7} />}
+          icon={isNavItemsDrawerOpen ? <CloseIcon w={5} h={5} /> : <HamburgerIcon w={7} h={7} />}
           variant={'ghost'}
           aria-label={'Toggle Navigation'}
         />
       )}
-      <NavItemsDrawer isOpen={isOpen} onClose={onClose} />
+      <NavItemsDrawer isOpen={isNavItemsDrawerOpen} onClose={onCloseNavItemsDrawer} />
     </Flex>
   )
 }

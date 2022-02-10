@@ -17,9 +17,11 @@ export function NavItemsDrawer({ onClose, isOpen }: NavItemsDrawerProps) {
   return (
     <Drawer placement="bottom" onClose={onClose} isOpen={isOpen}>
       <DrawerOverlay />
-      <DrawerContent>
-        <DrawerHeader borderBottomWidth="1px">Windr</DrawerHeader>
-        <DrawerCloseButton />
+      <DrawerContent roundedTop="14">
+        <DrawerHeader borderBottomWidth="1px" color="gray.500">
+          Links
+        </DrawerHeader>
+        <DrawerCloseButton color="gray.600" />
         <DrawerBody>
           <NavItems />
         </DrawerBody>
