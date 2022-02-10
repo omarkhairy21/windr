@@ -1,4 +1,4 @@
-import { Box, Heading, useDisclosure } from '@chakra-ui/layout'
+import { Box, Heading, useDisclosure } from '@chakra-ui/react'
 import { Layout } from '@components/Layout'
 
 export default function Dashboard() {
