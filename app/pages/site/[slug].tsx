@@ -14,7 +14,6 @@ export default function Site() {
     onOpen: onOpenNavItemsDrawer,
     onClose: onCloseNavItemsDrawer,
   } = useDisclosure()
-
   const {
     query: { id },
   } = useRouter()

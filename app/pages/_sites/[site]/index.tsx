@@ -7,6 +7,7 @@ import styles from '@styles/site.module.css'
 export default function Site(site: ISite) {
   return (
     <Head>
+      <title>{site.name}</title>
       <div className={styles.wrapper}>
         <div dangerouslySetInnerHTML={{ __html: site.contentHTML }} />
       </div>
@@ -45,13 +46,14 @@ export async function getStaticPaths() {
 
   console.log('Sites response', sites)
 
-  const domainSitesPaths = sites
+  const publishedSites = sites.filter((site: ISite) => site.isDrafted === false)
+  const domainSitesPaths = publishedSites
     .filter(({ subDomain }: ISite) => subDomain === null)
     .map((site: ISite) => ({
       params: { site: site.customDomain },
     }))
 
-  const subDomainSites = sites
+  const subDomainSites = publishedSites
     .filter(({ customDomain }: ISite) => customDomain === null)
     .map((site: ISite) => ({ params: { site: site.subDomain } }))
 

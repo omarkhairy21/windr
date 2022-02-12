@@ -115,7 +115,7 @@ export function TipTapEditor({ siteContent, saveContentOnEditorUpdate, siteId }:
           siteId={siteId}
         />
       )}
-      <Box p="1">
+      <Box p="1" pt="14">
         <FloatingMenu editor={editor} tippyOptions={{ zIndex: 1, placement: 'left' }}>
           <IconButton
             onClick={() => (isLargerThan1280 ? onMenuOpen() : onOpenDrawer())}
