@@ -1,10 +1,16 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap');
+
 .wrapper {
   margin: 1rem;
   padding: 1rem;
+  min-height: 100%;
+  height: auto;
+  font-family: 'Roboto', sans-serif;
 }
 /* Start Heading */
 .wrapper p {
-  color: #4a5568;
+  color: #718f9d;
+  font-size: 1rem;
 }
 
 .wrapper h1,
@@ -14,7 +20,7 @@
 .wrapper h5,
 .wrapper h6 {
   line-height: 1.1;
-  color: #1a365d;
+  color: #2e3c43;
 }
 
 .wrapper h1 {
@@ -53,24 +59,45 @@
   height: auto;
   margin: 1rem 0;
   border-radius: 0.4rem;
+  box-shadow: 14px 5px 43px -2px rgba(0, 0, 0, 0.15);
 }
 
 .wrapper blockquote {
   padding-left: 1rem;
-  background-color: aliceblue;
-  border-left: 6px solid #99c2ff;
+  margin-left: 1rem;
+  background-color: #cfecfc;
+  border-left: 6px solid #277396;
+  border-radius: 2px;
+  color: #06486d;
 }
 
 .wrapper blockquote p {
   display: inline;
 }
 
+.wrapper pre {
+  background-color: #111933;
+  border-radius: 4px;
+  padding: 1rem;
+  box-shadow: 14px 5px 43px -2px rgba(0, 0, 0, 0.15);
+}
+
+.wrapper pre code {
+  background-color: transparent;
+}
+
 .wrapper code {
-  background-color: rgba(#616161, 0.1);
+  background-color: #3f525b;
   border-radius: 0.25em;
-  color: #616161;
+  color: #a6b9c2;
   font-size: 0.9rem;
   padding: 0.25em;
+}
+
+.wrapper ol,
+ul {
+  padding-left: 1.5rem !important;
+  color: #718f9d;
 }
 
 @media only screen and (min-width: 768px) {
