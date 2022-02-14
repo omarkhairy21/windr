@@ -29,8 +29,12 @@ const features = [
 
 export function LandingPageHeader() {
   return (
-    <Box bg="gray.50" borderTopWidth="10px" borderTopColor={windrColorDarkBlue}>
-      <Container maxW={{ base: 'none', md: '80%' }} h="auto" minH="100vh">
+    <Box
+      bg="gray.50"
+      borderTopWidth="10px"
+      borderTopColor={windrColorDarkBlue}
+      fontFamily="Inter, sans-serif">
+      <Container maxW={{ base: 'none', md: '4xl' }} h="auto" minH="100vh">
         <SimpleGrid columns={{ base: 1, md: 2 }}>
           <Container
             mt={{ base: '6', md: '20' }}
@@ -38,25 +42,21 @@ export function LandingPageHeader() {
             textAlign={{ base: 'center', md: 'left' }}>
             <Heading
               fontWeight="bold"
-              fontSize={{ base: '4xl', md: '5xl' }}
+              fontSize={{ base: '4xl' }}
               color="gray.700"
               mt="4"
+              mb="4"
               lineHeight={'110%'}>
-              Mobile first website builder
+              Get the full potential of your phone to make a website.
             </Heading>
             <Heading
-              mt="6"
-              fontFamily="Inter, sans-serif"
               fontSize={{ base: '20px' }}
               fontWeight="normal"
               lineHeight={'130%'}
+              as="span"
+              bg={windrColorLightBlue}
               color="gray.500">
-              Create and publish static websites in seconds form any device,{' '}
-              <Box>
-                <Text bg={windrColorLightBlue} as="span">
-                  no code skills required with no learning curve.
-                </Text>
-              </Box>
+              windr dashboard is optimized for mobile devices.
             </Heading>
             <VStack align={{ base: 'center', md: 'flex-start' }} mt="4">
               <Link href="/auth">
@@ -77,7 +77,7 @@ export function LandingPageHeader() {
               </Text>
             </VStack>
           </Container>
-          <Container maxW="lg" my="6">
+          <Container my="6" alignItems="center" textAlign="center">
             <Image src={IphoneMockUp} alt="mockup" objectFit="cover" />
           </Container>
         </SimpleGrid>
