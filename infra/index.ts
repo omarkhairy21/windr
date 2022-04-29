@@ -1,7 +1,7 @@
 import * as pulumi from "@pulumi/pulumi";
 import * as aws from "@pulumi/aws";
 import * as awsx from "@pulumi/awsx";
-import { getEBConfig } from "./utils";
+import { getEBConfig } from "./config";
 
 const region = pulumi.output(aws.getRegion().then(data => data.name));
 const accountId = pulumi.output(aws.getCallerIdentity().then(data => data.accountId));
@@ -11,6 +11,7 @@ const dbPassword = 'postgres'
 
 const vpc = awsx.ec2.Vpc.getDefault();
 const subnetsIDs = pulumi.interpolate `${vpc.publicSubnetIds}`;
+
 // (2) ECR
 const ecr = new aws.ecr.Repository(`${appName}`, {
   name: `${appName}`,

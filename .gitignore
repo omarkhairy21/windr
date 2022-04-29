@@ -1,8 +1,17 @@
 node_modules
-windr.zip
+
+# old workflow for deploying on google app engine  
 .github/workflows/deploy-to-ebs.yml
 .github/workflows/ifra.yml
+
 # Elastic Beanstalk Files
-.elasticbeanstalk/*
+.elasticbeanstalk
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
+
+# assets
+assets/social
+
+# Do Experiments
+infra/for-testing.ts
+infra/for-testing-ecr.ts
