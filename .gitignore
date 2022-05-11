@@ -11,6 +11,7 @@ node_modules
 
 # assets
 assets/social
+assets/screen-shots
 
 # Do Experiments
 infra/for-testing.ts
@@ -18,3 +19,6 @@ infra/for-testing-ecr.ts
 
 # Docker volumes
 data
+
+# env varaibles
+app/.env.local
