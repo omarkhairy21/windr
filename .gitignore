@@ -15,3 +15,6 @@ assets/social
 # Do Experiments
 infra/for-testing.ts
 infra/for-testing-ecr.ts
+
+# Docker volumes
+data

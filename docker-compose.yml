@@ -1,32 +1,29 @@
-version: '1'
+version: '3.3'
 
 services:
   postgres: 
-    image: postgres:9.6
+    image: postgres:13.6
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: postgres
+      POSTGRES_PASSWORD: windr
+      POSTGRES_DB: windr
     volumes:
       - ./data/postgres:/var/lib/postgresql/data
     ports:
       - "5432:5432"
   server:
-    image: strapi/strapi:v3.6.8
+    build:
+      context: ./api
+      dockerfile: Dockerfile.dev
     depends_on:
       - postgres
-    environment:
-      - NODE_ENV=production
-      - PORT=3000
-      - DATABASE_URL=postgres://postgres:postgres@postgres:5432/postgres
-      - STRAPI_URL=http://server:3000
-      - STRAPI_SECRET=mysecret
-      - STRAPI_ADMIN_PASSWORD=admin
-      - STRAPI_ADMIN_USERNAME=admin
+    ports:
+      - "1337:1337"
   app:
-    image: nodejs:14.16.1-alpine
+    build: 
+      context: ./app
+      dockerfile: Dockerfile.dev
     depends_on:
       - server
     ports:
       - "3000:3000"
-    command: npm start
