@@ -35,3 +35,6 @@ yarn-error.log*
 # code editor
 .vscode
 .env
+
+# env varaibles
+.env.local

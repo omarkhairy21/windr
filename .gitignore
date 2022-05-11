@@ -19,6 +19,3 @@ infra/for-testing-ecr.ts
 
 # Docker volumes
 data
-
-# env varaibles
-app/.env.local
