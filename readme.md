@@ -25,7 +25,7 @@ Windr was starting as side project (side hustle), basically it likes medium.com 
 
 - AWS IAM
 - AWS S3
-- AWS ECR ()
+- Route 53
 - AWS Elastic Container Registry (ECR)
 - AWS Relational Database (RDS) PostgresSql
 - AWS Elastic Load Balancer (Classic)
@@ -46,6 +46,6 @@ Windr was starting as side project (side hustle), basically it likes medium.com 
 
 ## Overview of request life cycle
 
-> Note: the diagram missing the revers proxy as Load Balancer and Nginx as proxy before server instance
+> Note: the diagram missing resource Elastic Container Registry (ECR) and S3 Bucket which they are used to deploy new docker image in Elastic Beanstalk
 
 ![Request Life Cycle](/assets/request-flow.png "Request Life Cycle")
