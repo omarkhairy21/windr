@@ -48,4 +48,4 @@ Windr was starting as side project (side hustle), basically it likes medium.com 
 
 > Note: the diagram missing resource Elastic Container Registry (ECR) and S3 Bucket which they are used to deploy new docker image in Elastic Beanstalk
 
-![Request Life Cycle](/assets/request-flow.png "Request Life Cycle")
+![Request Life Cycle](/assets/request-life-cycle.png "Request Life Cycle")
